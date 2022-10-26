@@ -893,7 +893,7 @@ Must be used in conjunction with web-mode-enable-block-face."
 
 (defvar web-mode-void-elements
   '("area" "base" "br" "col" "command" "embed" "hr" "img" "input" "keygen"
-    "link" "meta" "param" "source" "track" "wbr" "tmpl_var"))
+    "link" "meta" "param" "source" "track" "wbr" "tmpl_var" "tmpl_include" "tmpl_setparam" "tmpl_setparamnow"))
 
 (defvar web-mode-part-content-types
   '("css" "javascript" "json" "jsx" "markdown" "pug" "ruby"
@@ -1052,7 +1052,7 @@ Must be used in conjunction with web-mode-enable-block-face."
     ("marko"            . "\\.marko\\'")
     ("mason"            . "\\.mas\\'")
     ("mojolicious"      . "\\.epl?\\'")
-    ("perl"             . "\\.\\(ptmpl\\|perl\\.html\\)\\'")
+    ("perl"             . "\\.\\(tmpl\\.html\\)\\'")
     ("php"              . "\\.\\(p[hs]p\\|ctp\\|inc\\)\\'")
     ("python"           . "\\.pml\\'")
     ("razor"            . "\\.\\(cs\\|vb\\)html\\|\\.razor\\'")
@@ -1400,7 +1400,7 @@ Must be used in conjunction with web-mode-enable-block-face."
    '("marko"            . "${")
    '("mason"            . "</?[&%]\\|^%.")
    '("mojolicious"      . "<%\\|^[ \t]*%.")
-   '("perl"             . "</?TMPL_[[:alpha:]]+")
+   '("perl"             . "</?TMPL_\\(IF\\|ELSE\\)")
    '("php"              . "<\\?")
    '("python"           . "<\\?")
    '("razor"            . "@.\\|^[ \t]*}")
@@ -2252,7 +2252,7 @@ shouldn't be moved back.)")
 
 (defvar web-mode-engine-tag-font-lock-keywords
   (list
-   '("</?\\([[:alpha:]]+\\(?:Template\\|[:.][[:alpha:]-]+\\)\\|TMPL_[[:alpha:]]+\\)" 1 'web-mode-block-control-face)
+   '("</?\\([[:alpha:]]+\\(?:Template\\|[:.][[:alpha:]-]+\\)\\|TMPL_\\(IF\\|ELSE\\)\\)" 1 'web-mode-block-control-face)
    '("\\_<\\([[:alpha:]-]+=\\)\\(\"[^\"]*\"\\)"
      (1 'web-mode-block-attr-name-face t t)
      (2 'web-mode-block-attr-value-face t t))
@@ -5005,7 +5005,7 @@ Also return non-nil if it is the command `self-insert-command' is remapped to."
            )
           ((looking-at "<TMPL_ELSE")
            (setq controls (append controls (list (cons 'inside "TMPL_IF")))))
-          ((looking-at "</?\\([[:alpha:]]+\\(?:[:.][[:alpha:]]+\\)\\|[[:alpha:]]+Template\\|TMPL_[[:alpha:]]+\\)")
+          ((looking-at "</?\\([[:alpha:]]+\\(?:[:.][[:alpha:]]+\\)\\|[[:alpha:]]+Template\\|TMPL_\\(IF\\|ELSE\\)\\)")
            (setq control (match-string-no-properties 1)
                  type (if (eq (aref (match-string-no-properties 0) 1) ?\/) 'close 'open))
            (when (not (member control '("h:inputtext" "jsp:usebean" "jsp:forward" "struts:property")))
